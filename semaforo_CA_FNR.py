@@ -19,14 +19,14 @@ def abrir_imagem(caminho):
     # Fecha a imagem anterior se ainda estiver aberta
     if processo_imagem and processo_imagem.poll() is None:
         processo_imagem.terminate()
-        processo_imagem.wait()  # Espera até a imagem fechar mesmo
+        processo_imagem.wait()  # Espera até a imagem fechar completamente
 
     if not os.path.exists(caminho):
         print(f"[imagem não encontrada] -> {caminho}")
         return
 
     try:
-        # Abre a imagem em full screen com feh isolado da sessão SSH
+        # Abre a nova imagem em full screen com feh isolado da sessão SSH
         processo_imagem = subprocess.Popen(
             ["setsid", "feh", "--fullscreen", caminho],
             stdin=subprocess.DEVNULL,
@@ -45,8 +45,10 @@ def escutar_comandos():
 
         if comando == 'sair':
             print("A sair da aplicação...")
+            # Fecha a imagem atual antes de sair
             if processo_imagem and processo_imagem.poll() is None:
                 processo_imagem.terminate()
+                processo_imagem.wait()  # Espera a imagem fechar antes de sair
             os._exit(0)
         elif comando in comandos_para_imagens:
             caminho = comandos_para_imagens[comando]
