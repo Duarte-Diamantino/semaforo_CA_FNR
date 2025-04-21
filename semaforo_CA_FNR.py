@@ -48,4 +48,10 @@ def escutar_comandos():
                 processo_imagem.terminate()
             os._exit(0)
         elif comando in comandos_para_imagens:
-            caminho = comandos_para_imagens[comando
+            caminho = comandos_para_imagens[comando]
+            abrir_imagem(caminho)
+        else:
+            print("Comando inválido ou não suportado.")
+
+if __name__ == "__main__":
+    escutar_comandos()
