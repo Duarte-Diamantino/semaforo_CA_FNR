@@ -1,5 +1,7 @@
 import os
 import subprocess
+import signal
+import sys
 
 # Mapeamento dos comandos para imagens
 comandos_para_imagens = {
@@ -55,6 +57,17 @@ def abrir_imagem(caminho):
     except Exception as e:
         print(f"[erro ao abrir imagem]: {e}")
 
+# Função para fechar a imagem e o fundo preto
+def fechar_aplicacao():
+    global processo_imagem, processo_preto
+    if processo_imagem and processo_imagem.poll() is None:
+        processo_imagem.terminate()
+        processo_imagem.wait()  # Espera a imagem fechar antes de sair
+
+    if processo_preto and processo_preto.poll() is None:
+        processo_preto.terminate()
+        processo_preto.wait()  # Espera o fundo preto fechar
+
 # Função para escutar os comandos do terminal
 def escutar_comandos():
     abrir_preto()  # Coloca o ecrã preto logo no início
@@ -67,20 +80,22 @@ def escutar_comandos():
 
         if comando == 'sair':
             print("A sair da aplicação...")
-            # Fecha a imagem atual antes de sair
-            if processo_imagem and processo_imagem.poll() is None:
-                processo_imagem.terminate()
-                processo_imagem.wait()  # Espera a imagem fechar antes de sair
-
-            # Reabre o ecrã preto
-            abrir_preto()
-
+            fechar_aplicacao()
             os._exit(0)
         elif comando in comandos_para_imagens:
             caminho = comandos_para_imagens[comando]
             abrir_imagem(caminho)
         else:
             print("Comando inválido ou não suportado.")
+
+# Função para capturar o Ctrl+C e garantir o fecho correto
+def signal_handler(sig, frame):
+    print('Ctrl+C detectado. Fechando aplicação...')
+    fechar_aplicacao()
+    sys.exit(0)
+
+# Registra o sinal de interrupção (Ctrl+C)
+signal.signal(signal.SIGINT, signal_handler)
 
 if __name__ == "__main__":
     escutar_comandos()
