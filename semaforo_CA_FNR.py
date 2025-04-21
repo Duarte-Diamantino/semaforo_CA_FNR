@@ -10,6 +10,9 @@ comandos_para_imagens = {
     'fim': 'imagens/fim.png'
 }
 
+# Caminho para a imagem preta
+imagem_preta = 'imagens/ecran_preto.png'  # Asegura que está no local correto
+
 # Guarda o processo da imagem atual
 processo_imagem = None
 processo_preto = None
@@ -18,9 +21,9 @@ processo_preto = None
 def abrir_preto():
     global processo_preto
     try:
-        # Abre o ecrã preto
+        # Abre a imagem preta no ecrã
         processo_preto = subprocess.Popen(
-            ["setsid", "feh", "--fullscreen", "--bg-color", "black", "/dev/null"],
+            ["setsid", "feh", "--fullscreen", imagem_preta],
             stdin=subprocess.DEVNULL,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
