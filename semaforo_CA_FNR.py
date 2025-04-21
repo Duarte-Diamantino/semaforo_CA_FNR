@@ -12,7 +12,23 @@ comandos_para_imagens = {
 
 # Guarda o processo da imagem atual
 processo_imagem = None
+processo_preto = None
 
+# Função para colocar o ecrã todo preto
+def abrir_preto():
+    global processo_preto
+    try:
+        # Abre o ecrã preto
+        processo_preto = subprocess.Popen(
+            ["setsid", "feh", "--fullscreen", "--bg-color", "black", "/dev/null"],
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+    except Exception as e:
+        print(f"[erro ao abrir ecrã preto]: {e}")
+
+# Função para abrir uma nova imagem
 def abrir_imagem(caminho):
     global processo_imagem
 
@@ -36,7 +52,10 @@ def abrir_imagem(caminho):
     except Exception as e:
         print(f"[erro ao abrir imagem]: {e}")
 
+# Função para escutar os comandos do terminal
 def escutar_comandos():
+    abrir_preto()  # Coloca o ecrã preto logo no início
+
     while True:
         try:
             comando = input("Comando (frente, esq, dir, stop, fim, sair): ").strip().lower()
@@ -49,6 +68,10 @@ def escutar_comandos():
             if processo_imagem and processo_imagem.poll() is None:
                 processo_imagem.terminate()
                 processo_imagem.wait()  # Espera a imagem fechar antes de sair
+
+            # Reabre o ecrã preto
+            abrir_preto()
+
             os._exit(0)
         elif comando in comandos_para_imagens:
             caminho = comandos_para_imagens[comando]
