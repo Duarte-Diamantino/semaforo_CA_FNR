@@ -1,7 +1,7 @@
 import os
 import subprocess
 
-# Mapeamento de comandos para imagens
+# Mapeamento dos comandos para imagens
 comandos_para_imagens = {
     'frente': 'imagens/frente.png',
     'esq': 'imagens/esquerda.png',
@@ -16,7 +16,7 @@ processo_imagem = None
 def abrir_imagem(caminho):
     global processo_imagem
 
-    # Fecha a imagem anterior se existir
+    # Fecha a imagem anterior se ainda estiver aberta
     if processo_imagem and processo_imagem.poll() is None:
         processo_imagem.terminate()
 
@@ -25,9 +25,10 @@ def abrir_imagem(caminho):
         return
 
     try:
-        # Abre a imagem em full screen com feh (sem output de erros)
+        # Abre a imagem em full screen com feh isolado da sessão SSH
         processo_imagem = subprocess.Popen(
-            ["feh", "--fullscreen", caminho],
+            ["setsid", "feh", "--fullscreen", caminho],
+            stdin=subprocess.DEVNULL,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
         )
@@ -36,18 +37,15 @@ def abrir_imagem(caminho):
 
 def escutar_comandos():
     while True:
-        comando = input("Comando (frente, esq, dir, stop, fim, sair): ").strip().lower()
+        try:
+            comando = input("Comando (frente, esq, dir, stop, fim, sair): ").strip().lower()
+        except EOFError:
+            break  # sai do loop se terminal for fechado
+
         if comando == 'sair':
             print("A sair da aplicação...")
-            # Fecha a imagem atual antes de sair
             if processo_imagem and processo_imagem.poll() is None:
                 processo_imagem.terminate()
             os._exit(0)
         elif comando in comandos_para_imagens:
-            caminho = comandos_para_imagens[comando]
-            abrir_imagem(caminho)
-        else:
-            print("Comando inválido ou não suportado.")
-
-if __name__ == "__main__":
-    escutar_comandos()
+            caminho = comandos_para_imagens[comando
