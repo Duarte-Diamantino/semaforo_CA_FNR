@@ -1,8 +1,7 @@
 import os
 import subprocess
-import threading
 
-# Mapeamento dos comandos para imagens
+# Mapeamento de comandos para imagens
 comandos_para_imagens = {
     'frente': 'imagens/frente.png',
     'esq': 'imagens/esquerda.png',
@@ -11,29 +10,44 @@ comandos_para_imagens = {
     'fim': 'imagens/fim.png'
 }
 
-# Abrir imagem com programa padrão do sistema
+# Guarda o processo da imagem atual
+processo_imagem = None
+
 def abrir_imagem(caminho):
+    global processo_imagem
+
+    # Fecha a imagem anterior se existir
+    if processo_imagem and processo_imagem.poll() is None:
+        processo_imagem.terminate()
+
     if not os.path.exists(caminho):
         print(f"[imagem não encontrada] -> {caminho}")
         return
+
     try:
-        subprocess.Popen(["xdg-open", caminho])  # para sistemas Linux (como Raspberry Pi OS)
+        # Abre a imagem em full screen com feh (sem output de erros)
+        processo_imagem = subprocess.Popen(
+            ["feh", "--fullscreen", caminho],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
     except Exception as e:
         print(f"[erro ao abrir imagem]: {e}")
 
-# Escutar comandos
 def escutar_comandos():
     while True:
         comando = input("Comando (frente, esq, dir, stop, fim, sair): ").strip().lower()
         if comando == 'sair':
             print("A sair da aplicação...")
-            os._exit(0)  # encerra imediatamente
+            # Fecha a imagem atual antes de sair
+            if processo_imagem and processo_imagem.poll() is None:
+                processo_imagem.terminate()
+            os._exit(0)
         elif comando in comandos_para_imagens:
             caminho = comandos_para_imagens[comando]
             abrir_imagem(caminho)
         else:
             print("Comando inválido ou não suportado.")
 
-# Main
 if __name__ == "__main__":
     escutar_comandos()
