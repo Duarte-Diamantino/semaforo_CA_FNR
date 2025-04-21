@@ -1,7 +1,6 @@
-import tkinter as tk
-from PIL import Image, ImageTk
-import threading
 import os
+import subprocess
+import threading
 
 # Mapeamento dos comandos para imagens
 comandos_para_imagens = {
@@ -12,50 +11,29 @@ comandos_para_imagens = {
     'fim': 'imagens/fim.png'
 }
 
-class ControladorDeImagem:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Controle por Terminal")
-        self.label = tk.Label(root)
-        self.label.pack()
-        self.imagem_atual = None
+# Abrir imagem com programa padrão do sistema
+def abrir_imagem(caminho):
+    if not os.path.exists(caminho):
+        print(f"[imagem não encontrada] -> {caminho}")
+        return
+    try:
+        subprocess.Popen(["xdg-open", caminho])  # para sistemas Linux (como Raspberry Pi OS)
+    except Exception as e:
+        print(f"[erro ao abrir imagem]: {e}")
 
-    def mostrar_imagem(self, caminho):
-        if not os.path.exists(caminho):
-            print(f"[imagem não encontrada] -> {caminho}")
-            return
-        try:
-            imagem = Image.open(caminho)
-            imagem = imagem.resize((400, 400))
-            self.imagem_atual = ImageTk.PhotoImage(imagem)
-            self.label.config(image=self.imagem_atual)
-        except Exception as e:
-            print(f"[erro ao mostrar imagem]: {e}")
-
-    def run(self):
-        self.root.mainloop()
-
-# Input no terminal (thread separada)
-def escutar_comandos(app):
+# Escutar comandos
+def escutar_comandos():
     while True:
         comando = input("Comando (frente, esq, dir, stop, fim, sair): ").strip().lower()
         if comando == 'sair':
             print("A sair da aplicação...")
-            app.root.quit()
-            break
+            os._exit(0)  # encerra imediatamente
         elif comando in comandos_para_imagens:
             caminho = comandos_para_imagens[comando]
-            app.mostrar_imagem(caminho)
+            abrir_imagem(caminho)
         else:
             print("Comando inválido ou não suportado.")
 
 # Main
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = ControladorDeImagem(root)
-
-    thread_comandos = threading.Thread(target=escutar_comandos, args=(app,))
-    thread_comandos.daemon = True
-    thread_comandos.start()
-
-    app.run()
+    escutar_comandos()
