@@ -19,6 +19,7 @@ def abrir_imagem(caminho):
     # Fecha a imagem anterior se ainda estiver aberta
     if processo_imagem and processo_imagem.poll() is None:
         processo_imagem.terminate()
+        processo_imagem.wait()  # Espera até a imagem fechar mesmo
 
     if not os.path.exists(caminho):
         print(f"[imagem não encontrada] -> {caminho}")
