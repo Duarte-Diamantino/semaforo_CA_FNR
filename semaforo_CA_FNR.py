@@ -8,10 +8,10 @@ comandos_para_imagens = {
     'frente': 'imagens/frente.png',
     'esq': 'imagens/esquerda.png',
     'dir': 'imagens/direita.png',
-    'stop': 'imagens/stop.png'
+    'stop': 'imagens/stop.png',
+    'fim': 'imagens/fim.png'
 }
 
-# Classe da aplicação
 class ControladorDeImagem:
     def __init__(self, root):
         self.root = root
@@ -23,7 +23,7 @@ class ControladorDeImagem:
     def mostrar_imagem(self, caminho):
         if not os.path.exists(caminho):
             print(f"[imagem não encontrada] -> {caminho}")
-            return  # ignora e continua
+            return
         try:
             imagem = Image.open(caminho)
             imagem = imagem.resize((400, 400))
@@ -35,11 +35,11 @@ class ControladorDeImagem:
     def run(self):
         self.root.mainloop()
 
-# Função de input
+# Input no terminal (thread separada)
 def escutar_comandos(app):
     while True:
         comando = input("Comando (frente, esq, dir, stop, fim, sair): ").strip().lower()
-        if comando in ['fim', 'sair']:
+        if comando == 'sair':
             print("A sair da aplicação...")
             app.root.quit()
             break
@@ -49,7 +49,7 @@ def escutar_comandos(app):
         else:
             print("Comando inválido ou não suportado.")
 
-# Execução principal
+# Main
 if __name__ == "__main__":
     root = tk.Tk()
     app = ControladorDeImagem(root)
