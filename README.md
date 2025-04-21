@@ -48,20 +48,21 @@ cd ~/Documents/semaforo_CA_FNR/
 
 ---
 
-## 🖱️ 6. Exemplos de comandos para mover o cursor do rato
-
-```bash
-xdotool mousemove 500 300
-xdotool mousemove 1500 1300
-```
-
----
-
-## 🖼️ 7. Preparar o ambiente gráfico (para abrir imagens e mover o rato)
+## 🖼️ 8. Preparar o ambiente gráfico (para abrir imagens e mover o rato)
 
 ```bash
 export DISPLAY=:0
 export XAUTHORITY=/home/pi/.Xauthority
+```
+
+---
+
+
+## 🖱️ 7. Exemplos de comandos para mover o cursor do rato
+
+```bash
+xdotool mousemove 500 300
+xdotool mousemove 1500 1300
 ```
 
 ---
