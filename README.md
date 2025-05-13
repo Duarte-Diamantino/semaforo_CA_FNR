@@ -7,6 +7,10 @@ Num terminal no teu PC, corre:
 ```bash
 arp -a
 ```
+ou, em linux, 
+```bash
+sudo arp-scan --localnet
+```
 
 Procura uma entrada com o endereço MAC começa por b8-27-eb, que é prefixo oficial da Raspberry Pi Foundation.
 
@@ -79,11 +83,8 @@ python3 semaforo_CA_FNR.py
 ## 🔁 9. Passos para reutilizar no futuro
 
 ```bash
-ssh pi@192.168.1.233
+ssh pi@xxx.xxx.x.xxx
 # Palavra-passe: aluno
 
-export DISPLAY=:0
-export XAUTHORITY=/home/pi/.Xauthority
-cd ~/Documents/semaforo_CA_FNR/
-python3 semaforo_CA_FNR.py
+bash run_semaforos.sh
 ```
