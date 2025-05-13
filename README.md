@@ -77,7 +77,21 @@ xdotool mousemove 1500 1300
 ```bash
 python3 semaforo_CA_FNR.py
 ```
+Este processo pode ser automatizado, criando os seguintes passos:
 
+```bash
+nano run_semaforos.sh
+```
+e escrever o seguinte script
+```bash
+#!/bin/bash
+export DISPLAY=:0
+export XAUTHORITY=/home/pi/.Xauthority
+xdotool mousemove 500 300
+xdotool mousemove 1500 1300
+cd ~/Documents/semaforo_CA_FNR/
+python3 semaforo_CA_FNR.py
+```
 ---
 
 ## 🔁 9. Passos para reutilizar no futuro
