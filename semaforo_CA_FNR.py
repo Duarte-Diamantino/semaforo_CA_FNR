@@ -9,6 +9,7 @@ comandos_para_imagens = {
     'esq': 'imagens/esquerda.png',
     'dir': 'imagens/direita.png',
     'stop': 'imagens/stop.png',
+    'parque': 'imagens/parque.png',
     'fim': 'imagens/fim.png'
 }
 
@@ -74,7 +75,7 @@ def escutar_comandos():
 
     while True:
         try:
-            comando = input("Comando (frente, esq, dir, stop, fim, sair): ").strip().lower()
+            comando = input("Comando (frente, esq, dir, stop, parque, fim, sair): ").strip().lower()
         except EOFError:
             break  # sai do loop se terminal for fechado
 
